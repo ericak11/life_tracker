@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require 'redis'
-require 'JSON'
+require 'json'
 require 'uri'
 
 class App < Sinatra::Base
