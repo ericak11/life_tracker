@@ -6,9 +6,10 @@ class App < Sinatra::Base
 
   configure do
     REDIS_URL = "redis://127.0.0.1:6379/0"
+    TOGO_URL = "redis://redistogo:ca40496fa8b0a88dad3837fb0c8026bf@barreleye.redistogo.com:10179/"
     enable :logging
     enable :method_override
-    $redis = Redis.new(url: REDIS_URL)
+    $redis = Redis.new(url: TOGO_URL)
     # @@coffee = 0
     # @@tea = 0
     # @@water = 0
