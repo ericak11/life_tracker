@@ -1,21 +1,34 @@
 require 'sinatra/base'
 require 'redis'
 require 'JSON'
+require 'uri'
 
 class App < Sinatra::Base
 
+  # configure do
+  #   REDIS_URL = ENV["REDISTOGO_URL"]
+  #   uri = URI.parse(ENV["REDISTOGO_URL"])
+  #   $redis = Redis.new({:host => uri.host,
+  #                       :port => uri.port,
+  #                       :password => uri.password})
+  #   enable :logging
+  #   enable :method_override
+  #   $redis = Redis.new(url: REDIS_URL)
+  #   # @@coffee = 0
+  #   # @@tea = 0
+  #   # @@water = 0
+  # end
   configure do
+    # setting up redis connection
     REDIS_URL = ENV["REDISTOGO_URL"]
     uri = URI.parse(ENV["REDISTOGO_URL"])
     $redis = Redis.new({:host => uri.host,
                         :port => uri.port,
                         :password => uri.password})
-    enable :logging
-    enable :method_override
-    $redis = Redis.new(url: REDIS_URL)
-    # @@coffee = 0
-    # @@tea = 0
-    # @@water = 0
+    # setnx sets a value if it doesn't exist
+    $redis.setnx("coffee", 0)
+    $redis.setnx("water", 0)
+    $redis.setnx("tea", 0)
   end
 
   before do
@@ -33,9 +46,9 @@ class App < Sinatra::Base
   #   @tea = @@tea
   #   @water = @@water
   # setnx sets a value if it doesnt exist
-    $redis.setnx("coffee", 0)
-    $redis.setnx("tea", 0)
-    $redis.setnx("water", 0)
+    # $redis.setnx("coffee", 0)
+    # $redis.setnx("tea", 0)
+    # $redis.setnx("water", 0)
     @coffee = $redis.get("coffee")
     @tea = $redis.get("tea")
     @water = $redis.get("water")
