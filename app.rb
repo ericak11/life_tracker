@@ -4,7 +4,6 @@ require 'JSON'
 require 'uri'
 
 class App < Sinatra::Base
-
   # configure do
   #   REDIS_URL = ENV["REDISTOGO_URL"]
   #   uri = URI.parse(ENV["REDISTOGO_URL"])
