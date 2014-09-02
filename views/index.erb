@@ -1,5 +1,19 @@
+<body style="background-image:
+<% if @is_tea == true %>
+url(tea.jpg);
+<% elsif @is_coffee == true %>
+url(coffee.jpg);
+<% elsif @is_water == true %>
+url(water.jpg);
+<% end %>
+background-repeat: no-repeat;
+background-size: 100%;
+}
+" >
+
 <p>TEA: <%= @tea %> </p>
 <p>COFFEE: <%= @coffee %> </p>
 <p>WATER: <%= @water %> </p>
 
 <a class= "buttons" href="/drinks">Track what you drank</a>
+</body>

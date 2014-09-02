@@ -24,6 +24,13 @@ class App < Sinatra::Base
     @coffee = @@coffee
     @tea = @@tea
     @water = @@water
+    if params[:choice] == "Tea"
+      @is_tea = true
+    elsif params[:choice] == "Coffee"
+      @is_coffee = true
+    elsif params[:choice] == "Water"
+      @is_water = true
+    end
     render(:erb, :index)
   end
 
@@ -34,13 +41,14 @@ class App < Sinatra::Base
 
   post("/drinks") do
     if params[:choice].match("Tea")
+
       @@tea += 1
     elsif params[:choice].match("Coffee")
       @@coffee += 1
     elsif params[:choice].match("Water")
       @@water += 1
     end
-    redirect to ("/")
+    redirect to ("/?choice=#{params[:choice]}")
   end
 
 end
