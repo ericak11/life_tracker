@@ -1,13 +1,17 @@
 require 'sinatra/base'
+require 'redis'
+require 'JSON'
 
 class App < Sinatra::Base
 
   configure do
+    REDIS_URL = "redis://127.0.0.1:6379/0"
     enable :logging
     enable :method_override
-    @@coffee = 0
-    @@tea = 0
-    @@water = 0
+    $redis = Redis.new(url: REDIS_URL)
+    # @@coffee = 0
+    # @@tea = 0
+    # @@water = 0
   end
 
   before do
@@ -21,14 +25,21 @@ class App < Sinatra::Base
 
 ####### ROUTES
   get("/")  do
-    @coffee = @@coffee
-    @tea = @@tea
-    @water = @@water
-    if params[:choice] == "Tea"
+  #   @coffee = @@coffee
+  #   @tea = @@tea
+  #   @water = @@water
+  # setnx sets a value if it doesnt exist
+    $redis.setnx("coffee", 0)
+    $redis.setnx("tea", 0)
+    $redis.setnx("water", 0)
+    @coffee = $redis.get("coffee")
+    @tea = $redis.get("tea")
+    @water = $redis.get("water")
+    if params[:choice] == "tea"
       @is_tea = true
-    elsif params[:choice] == "Coffee"
+    elsif params[:choice] == "coffee"
       @is_coffee = true
-    elsif params[:choice] == "Water"
+    elsif params[:choice] == "water"
       @is_water = true
     end
     render(:erb, :index)
@@ -40,14 +51,18 @@ class App < Sinatra::Base
   end
 
   post("/drinks") do
-    if params[:choice].match("Tea")
+    drink = params[:choice]
+    count = $redis.get(drink).to_i
+    $redis.set(drink, count += 1)
 
-      @@tea += 1
-    elsif params[:choice].match("Coffee")
-      @@coffee += 1
-    elsif params[:choice].match("Water")
-      @@water += 1
-    end
+    # if params[:choice].match("Tea")
+
+    #   @@tea += 1
+    # elsif params[:choice].match("Coffee")
+    #   @@coffee += 1
+    # elsif params[:choice].match("Water")
+    #   @@water += 1
+    # end
     redirect to ("/?choice=#{params[:choice]}")
   end
 
